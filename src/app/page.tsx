@@ -1,11 +1,10 @@
-import { Button } from "@/components/ui/button";
+import { Sidebar } from "@/components/sidebar";
 
 export default function Dashboard() {
   return (
-    <div>
-      <h1>Hello World</h1>
+    <div className="flex">
 
-      <Button>Click me</Button>
+      <Sidebar />
     </div>
   );
 }
