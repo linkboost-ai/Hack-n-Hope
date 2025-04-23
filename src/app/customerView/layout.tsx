@@ -1,23 +1,27 @@
 import { Sidebar } from "@/components/sidebar";
 import { Cog, User, Users, ClipboardList, LayoutDashboard } from "lucide-react";
 
-export default function Dashboard() {
+export default function CustomerLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <div className="flex">
       <Sidebar
         navItems={[
           {
-            href: "/customerOverview",
+            href: "/customerView/customerOverview",
             icon: <LayoutDashboard size={20} />,
             label: "Dashboard",
           },
           {
-            href: "/customerMatching",
+            href: "/customerView/customerMatching",
             icon: <Users size={20} />,
             label: "Matching",
           },
           {
-            href: "/projectRequest",
+            href: "/customerView/projectRequest",
             icon: <ClipboardList size={20} />,
             label: "Project Request",
           },
@@ -33,6 +37,7 @@ export default function Dashboard() {
           },
         ]}
       />
+      <main className="flex-1 p-8">{children}</main>
     </div>
   );
 }

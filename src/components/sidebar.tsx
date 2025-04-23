@@ -1,13 +1,19 @@
 import type React from "react"
 import { cn } from "@/lib/utils"
-import { Cog, User, Users } from "lucide-react"
 import Link from "next/link"
+
+interface NavItem {
+  href: string
+  icon: React.ReactNode
+  label: string
+}
 
 interface SidebarProps {
   className?: string
+  navItems: NavItem[]
 }
 
-export function Sidebar({ className }: SidebarProps) {
+export function Sidebar({ className, navItems }: SidebarProps) {
   return (
     <div
       className={cn(
@@ -24,21 +30,13 @@ export function Sidebar({ className }: SidebarProps) {
 
       <nav className="w-full px-6">
         <ul className="space-y-4">
-          <li>
-            <NavItem href="/matching" icon={<Users size={20} />} isActive>
-              Matching
-            </NavItem>
-          </li>
-          <li>
-            <NavItem href="/settings" icon={<Cog size={20} />}>
-              Settings
-            </NavItem>
-          </li>
-          <li>
-            <NavItem href="/profile" icon={<User size={20} />}>
-              Profile
-            </NavItem>
-          </li>
+          {navItems.map((item) => (
+            <li key={item.href}>
+              <NavItem href={item.href} icon={item.icon} isActive={false}>
+                {item.label}
+              </NavItem>
+            </li>
+          ))}
         </ul>
       </nav>
     </div>
