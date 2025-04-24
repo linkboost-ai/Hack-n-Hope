@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI-Based Project Matching for Consulting Firms
 
-## Getting Started
+## Business Case
 
-First, run the development server:
+### Idea
+Our business idea is to develop an AI-powered matching system that assigns consultants from consulting firms to client projects. The goal is to minimize opportunity costs and reduce employee turnover.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Problem We Solve
+We address the issue of over- and under-staffing by aligning workloads with consultants' skills and preferences. Furthermore, our solution enhances employee satisfaction by considering career development opportunities during the matching process.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Target Customers
+Our primary customers are IT consulting firms with 50 or more consultants, ranging from small to large organizations.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Revenue Model
+We generate revenue through:
+- A one-time setup fee: **[TO BE FILLED]**
+- Annual license fees based on the number of consultants: **[TO BE FILLED]**
+- Optional support packages: **[TO BE FILLED]**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Differentiation
+Unlike competitors, our approach is human-centric. We focus on enhancing rather than replacing staffing roles. Our solution uniquely emphasizes the development and satisfaction of consultants, which is currently an underserved area in the market.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Market Research
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Market Size & Growth
+- The global IT consulting market is projected to reach $1 trillion USD by 2025, with a CAGR of 6.2%.  
+  Source: [BusinessPlanTemplates](https://businessplan-templates.com/blogs/profits/it-consulting-services)
+- Example: Accenture reported $64.9 billion USD in revenue in 2024.  
+  Source: [Wikipedia - Accenture](https://de.wikipedia.org/wiki/Accenture)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Profitability & Margins
+- Industry average profit margins range from 10–30%, depending on specialization and efficiency.  
+  Source: [Starteazy](https://starteazy.in/blog/profit-margin-in-it-consulting-the-good-and-the-bad)
+- Profit margins of top companies:
+  - TCS: >25%
+  - Infosys: 20–23%
+  - Accenture: ~13–15%
+  - Capgemini: ~10–12%
 
-## Deploy on Vercel
+### Competitor Landscape
+Key players in consultant-project matching:
+- COMATCH: Matching platform for independent consultants and experts ([Wikipedia](https://de.wikipedia.org/wiki/COMATCH))
+- Lyncronize: AI-based IT service provider matching ([Lyncronize](https://lyncronize.com))
+- Matchilla: Procurement and matching platform ([Matchilla](https://matchilla.de))
+- IT2match: IT services and software matching ([IT2match](https://www.it2match.de))
+- Planforge and Projektron BCS: Project management tools with resource planning ([Planforge](https://de.wikipedia.org/wiki/Planforge), [Projektron BCS](https://de.wikipedia.org/wiki/Projektron_BCS))
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Customer Base
+Thousands of mid-sized IT consulting firms worldwide still use manual or semi-automated matching processes. High inefficiency and opportunity cost due to poor matching create demand for automation.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### AI Relevance & Willingness to Pay
+- AI adoption can boost productivity in IT by up to 45%.  
+  Source: [Reuters on GenAI](https://www.reuters.com/technology/artificial-intelligence/genai-boost-indias-it-industrys-productivity-by-up-45-ey-india-survey-shows-2025-02-10/)
+- However, cost concerns can delay adoption.  
+  Source: [Reuters](https://www.reuters.com/technology/cost-concerns-could-delay-ai-ramp-up-among-it-clients-infosys-exec-says-2024-02-26/)
+
+---
+
+## Key Metrics for Investors
+
+### Why This Business Matters
+- Market size: $1T+ and growing
+- Consulting firms: Thousands of potential customers
+- Problem: High cost of misallocation and churn
+- Solution: Efficiency, satisfaction, retention
+
+### Business Model
+- Setup fee: **[TO BE FILLED]** (e.g. €5,000–15,000)
+- Annual license: **[TO BE FILLED]** (e.g. €100–300 per consultant)
+- Support: **[TO BE FILLED]** (e.g. 10–20% of license fee)
+
+### Competitive Edge
+- Human-centric approach
+- Focus on consultant development and satisfaction
+- Extendable to other sectors: finance, engineering, etc.
+
+### Scalability
+- Expandable SaaS model
+- High margins potential
+- Future features: predictive matching, data insights, skill analytics
+
+### Traction
+- MVP in development / Pilot phase **[TO BE FILLED: CURRENT STATUS]**
+
+### Exit Options
+- Strategic buyers: ERP vendors, HR tech providers, global consultancies
