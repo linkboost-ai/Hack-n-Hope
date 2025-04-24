@@ -34,7 +34,7 @@ export async function getConsultants() {
 
   console.log('Fetching consultants...')
   const { data, error } = await supabase
-    .from('Consultants')  // Changed to match the actual table name
+    .from('consultant')  // Changed from 'Consultants' to 'consultant'
     .select('*')
     .order('created_at', { ascending: false })
   
@@ -72,7 +72,7 @@ export async function getProjects() {
 
   console.log('Fetching projects...')
   const { data, error } = await supabase
-    .from('Projects')  // Changed to match the actual table name
+    .from('project')  // Changed from 'Projects' to 'project'
     .select('*')
     .order('created_at', { ascending: false })
   
@@ -84,6 +84,18 @@ export async function getProjects() {
       config
     })
     throw error
+  }
+
+  // Debug log the first project to check data structure
+  if (data && data.length > 0) {
+    console.log('First project data:', {
+      id: data[0].id,
+      name: data[0].name,
+      status: data[0].status,
+      skills: data[0].skills
+    })
+  } else {
+    console.log('No projects found in database')
   }
   
   return data as Project[]
@@ -97,7 +109,7 @@ export async function getMatches() {
   }
 
   const { data, error } = await supabase
-    .from('match')  // Changed to match the actual table name
+    .from('matches')  // Changed from 'match' to 'matches'
     .select('*')
     .order('created_at', { ascending: false })
   
@@ -122,7 +134,7 @@ export async function getMatchesByProject(projectId: string) {
   }
 
   const { data, error } = await supabase
-    .from('Matches')  // Changed to match the actual table name
+    .from('matches')  // Changed from 'Matches' to 'matches'
     .select('*')
     .eq('project_id', projectId)
     .order('score', { ascending: false })
@@ -148,7 +160,7 @@ export async function getMatchesByConsultant(consultantId: string) {
   }
 
   const { data, error } = await supabase
-    .from('Matches')  // Changed to match the actual table name
+    .from('matches')  // Changed from 'Matches' to 'matches'
     .select('*')
     .eq('consultant_id', consultantId)
     .order('created_at', { ascending: false })
