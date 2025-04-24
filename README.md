@@ -1,36 +1,22 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Business Case: KI-gestütztes Matching für Beratungsunternehmen
 
-## Getting Started
 
-First, run the development server:
+## Geschäftsidee
+Unsere Lösung bietet ein KI-gestütztes Matching-System, das IT-Beratungsunternehmen dabei unterstützt, interne Berater effizient und gezielt auf Kundenprojekte zuzuordnen. Ziel ist es, Opportunitätskosten durch ungenutzte Kapazitäten zu verringern und gleichzeitig die Mitarbeiterfluktuation zu reduzieren.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Problemstellung
+Viele Beratungsunternehmen leiden unter ineffizienter Ressourcenzuweisung, die zu Over- oder Understaffing führt. Gleichzeitig bleiben individuelle Skillsets und Entwicklungsziele der Berater oft unberücksichtigt. Dies beeinträchtigt nicht nur die Projektperformance, sondern auch die Zufriedenheit und Bindung der Mitarbeitenden.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Lösung
+Unsere Plattform analysiert Projekte, Skillsets, Verfügbarkeiten und Weiterentwicklungsziele der Berater, um eine optimale Besetzung sicherzustellen. Durch datengetriebene Entscheidungen entsteht eine bessere Workload-Verteilung sowie eine höhere Mitarbeiterzufriedenheit.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Zielgruppe
+IT-Beratungsfirmen mit mindestens 50 Beratern, die Wert auf Effizienz, Mitarbeiterbindung und qualitative Projektbesetzung legen.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Geschäftsmodell
+- Einmalige Einrichtungsgebühr  
+- Jährliche Lizenzkosten (skaliert mit der Anzahl der Berater)  
+- Optionale Support- und Servicepakete
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Wettbewerbsvorteil
+Im Gegensatz zu rein operativen Tools setzen wir auf einen human-centric Ansatz: Wir ersetzen keine Staffing-Rollen, sondern erweitern ihre Möglichkeiten durch datenbasierte Intelligenz. Der Fokus liegt nicht nur auf Projektbesetzung, sondern auch auf der individuellen Weiterentwicklung der Berater – ein bislang vernachlässigter Aspekt im Markt.
