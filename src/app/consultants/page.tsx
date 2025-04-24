@@ -4,29 +4,91 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { UserPlus } from "lucide-react"
 import { ConsultantCard } from "@/components/consultant-card"
-import { consultants } from "@/data/mock-data"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import React from "react"
+import { useState, useEffect } from "react"
+import { getConsultants } from "@/lib/data-service"
+import type { Consultant } from "@/lib/supabase"
 
 export default function ConsultantsPage() {
-  const [searchTerm, setSearchTerm] = React.useState("")
-  const [sortBy, setSortBy] = React.useState("score")
+  const [searchTerm, setSearchTerm] = useState("")
+  const [sortBy, setSortBy] = useState("date")
+  const [consultants, setConsultants] = useState<Consultant[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    async function fetchData() {
+      setLoading(true)
+      setError(null)
+      try {
+        const data = await getConsultants()
+        setConsultants(data)
+      } catch (error) {
+        console.error('Error fetching consultants:', error)
+        setError(error instanceof Error ? error.message : 'Failed to load consultants')
+        setConsultants([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [])
 
   const filteredConsultants = consultants
     .filter(consultant => {
+      if (!searchTerm) return true
+      
       const searchLower = searchTerm.toLowerCase()
+      const name = consultant.name?.toLowerCase() ?? ''
+      const industry = consultant.industry?.toLowerCase() ?? ''
+      const location = consultant.location?.toLowerCase() ?? ''
+      
       return (
-        consultant.name.toLowerCase().includes(searchLower) ||
-        consultant.role.toLowerCase().includes(searchLower) ||
-        consultant.skills.some(skill => skill.toLowerCase().includes(searchLower))
+        name.includes(searchLower) ||
+        industry.includes(searchLower) ||
+        location.includes(searchLower)
       )
     })
     .sort((a, b) => {
-      if (sortBy === "score") return b.score - a.score
-      if (sortBy === "name") return a.name.localeCompare(b.name)
-      return b.rating - a.rating
+      if (sortBy === "date") {
+        return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime()
+      }
+      if (sortBy === "name") {
+        return (a.name || '').localeCompare(b.name || '')
+      }
+      return (a.name || '').localeCompare(b.name || '')
     })
+
+  if (loading) {
+    return (
+      <main className="p-6 space-y-6">
+        <Card>
+          <CardContent className="py-20">
+            <div className="flex items-center justify-center">
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+            </div>
+          </CardContent>
+        </Card>
+      </main>
+    )
+  }
+
+  if (error) {
+    return (
+      <main className="p-6 space-y-6">
+        <Card className="bg-red-50">
+          <CardContent className="py-8">
+            <div className="text-center">
+              <h2 className="text-lg font-medium text-red-800 mb-2">Error Loading Consultants</h2>
+              <p className="text-sm text-red-600">{error}</p>
+            </div>
+          </CardContent>
+        </Card>
+      </main>
+    )
+  }
 
   return (
     <main className="p-6 space-y-6">
@@ -51,9 +113,8 @@ export default function ConsultantsPage() {
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="score">Sort by Score</SelectItem>
+                  <SelectItem value="date">Sort by Date</SelectItem>
                   <SelectItem value="name">Sort by Name</SelectItem>
-                  <SelectItem value="rating">Sort by Rating</SelectItem>
                 </SelectContent>
               </Select>
             </div>

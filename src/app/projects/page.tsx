@@ -4,31 +4,95 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { FolderPlus } from "lucide-react"
 import { ProjectCard } from "@/components/project-card"
-import { projects } from "@/data/mock-data"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { getProjects, debugSupabaseConfig } from "@/lib/data-service"
+import type { Project } from "@/lib/supabase"
 
 export default function ProjectsPage() {
   const [searchTerm, setSearchTerm] = useState("")
-  const [sortBy, setSortBy] = useState("priority")
+  const [sortBy, setSortBy] = useState("date")
+  const [projects, setProjects] = useState<Project[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [debugInfo, setDebugInfo] = useState<any>(null)
+
+  useEffect(() => {
+    async function fetchData() {
+      setLoading(true)
+      setError(null)
+      try {
+        const config = debugSupabaseConfig()
+        setDebugInfo(config)
+        const data = await getProjects()
+        setProjects(data)
+      } catch (error) {
+        console.error('Error fetching projects:', error)
+        setError(error instanceof Error ? error.message : 'Failed to load projects')
+        setProjects([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [])
 
   const filteredProjects = projects
-    .filter(
-      (project) =>
-        project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        project.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        project.skills.some((skill) => skill.toLowerCase().includes(searchTerm.toLowerCase())),
+    .filter(project =>
+      project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      project.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      project.requirements.some(req => req.toLowerCase().includes(searchTerm.toLowerCase()))
     )
     .sort((a, b) => {
-      if (sortBy === "priority") {
-        const priorityOrder = { High: 3, Medium: 2, Low: 1 }
-        return priorityOrder[b.priority] - priorityOrder[a.priority]
-      }
-      if (sortBy === "title") return a.title.localeCompare(b.title)
-      if (sortBy === "client") return a.client.localeCompare(b.client)
-      return 0
+      if (sortBy === "date") return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      if (sortBy === "name") return a.name.localeCompare(b.name)
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     })
+
+  if (loading) {
+    return (
+      <main className="p-6 space-y-6">
+        <Card>
+          <CardContent className="py-20">
+            <div className="flex items-center justify-center">
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+            </div>
+          </CardContent>
+        </Card>
+      </main>
+    )
+  }
+
+  if (error) {
+    return (
+      <main className="p-6 space-y-6">
+        <Card className="bg-red-50">
+          <CardContent className="py-8">
+            <div className="text-center">
+              <h2 className="text-lg font-medium text-red-800 mb-2">Error Loading Projects</h2>
+              <p className="text-sm text-red-600 mb-4">{error}</p>
+              <div className="text-left bg-white p-4 rounded-md shadow-sm mx-auto max-w-lg">
+                <h3 className="font-medium mb-2">Debug Information:</h3>
+                <pre className="text-xs overflow-auto whitespace-pre-wrap">
+                  {JSON.stringify(debugInfo, null, 2)}
+                </pre>
+                <div className="mt-4 text-sm text-gray-600">
+                  <p>Make sure:</p>
+                  <ul className="list-disc list-inside">
+                    <li>Your .env.local file exists with the correct variables</li>
+                    <li>The table name in Supabase is exactly &quot;Projects&quot; (with capital P)</li>
+                    <li>You&apos;ve created the table in your Supabase project</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </main>
+    )
+  }
 
   return (
     <main className="p-6 space-y-6">
@@ -36,7 +100,7 @@ export default function ProjectsPage() {
         <CardHeader>
           <CardTitle className="text-2xl">Projects</CardTitle>
           <CardDescription>
-            Browse and manage project listings. Find and track ongoing and upcoming projects.
+            Browse and manage your projects. Find the perfect consultants for each project.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -48,17 +112,13 @@ export default function ProjectsPage() {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-[300px]"
               />
-              <Select
-                value={sortBy}
-                onValueChange={setSortBy}
-              >
+              <Select value={sortBy} onValueChange={setSortBy}>
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="priority">Sort by Priority</SelectItem>
-                  <SelectItem value="title">Sort by Title</SelectItem>
-                  <SelectItem value="client">Sort by Client</SelectItem>
+                  <SelectItem value="date">Sort by Date</SelectItem>
+                  <SelectItem value="name">Sort by Name</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -70,8 +130,8 @@ export default function ProjectsPage() {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredProjects.map((project) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredProjects.map(project => (
           <ProjectCard key={project.id} project={project} />
         ))}
       </div>

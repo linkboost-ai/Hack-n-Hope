@@ -1,257 +1,284 @@
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { analytics, consultants, projects } from "@/data/mock-data"
-import { AreaChart, BarChart, DonutChart } from "@tremor/react"
-import { UserPlus, FolderPlus } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { ConsultantCard } from "@/components/consultant-card"
-import { ProjectCard } from "@/components/project-card"
-import { useState } from "react"
+import { AlertTriangle, CheckCircle2, Users, Clock, Calendar, ArrowRight } from "lucide-react"
+import {
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer
+} from "recharts"
 
-// Define chart data types
-interface ChartData {
-  [key: string]: string | number
+// Mock data
+const mockData = {
+  skillGaps: {
+    java: { required: 15, available: 10 },
+    python: { required: 12, available: 15 },
+    react: { required: 20, available: 12 },
+    aws: { required: 8, available: 5 }
+  },
+  staffingMetrics: {
+    understaffedProjects: 4,
+    overstaffedProjects: 2,
+    unassignedConsultants: 8,
+    criticalSkillGaps: 3
+  },
+  utilizationRate: 78, // percentage
+  avgTimeToStaff: 14, // days
+  historicalUtilization: {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    data: [65, 72, 78, 75, 82, 78]
+  },
+  // New mock data for upcoming staffing needs
+  upcomingStaffingNeeds: [
+    { 
+      project: "Cloud Migration", 
+      skill: "AWS", 
+      needed: 3, 
+      startDate: "May 2", 
+      potentialMatches: 2 
+    },
+    { 
+      project: "Mobile App", 
+      skill: "React Native", 
+      needed: 2, 
+      startDate: "May 10", 
+      potentialMatches: 1 
+    },
+    { 
+      project: "Data Pipeline", 
+      skill: "Python", 
+      needed: 4, 
+      startDate: "May 15", 
+      potentialMatches: 4 
+    },
+    { 
+      project: "Enterprise Portal", 
+      skill: "Java", 
+      needed: 2, 
+      startDate: "May 7", 
+      potentialMatches: 0 
+    }
+  ]
 }
 
-interface ProjectActivityData extends ChartData {
-  month: string
-  "Projects Started": number
-  "Projects Completed": number
-  "Active Consultants": number
-}
+// Format historical utilization data for the chart
+const utilizationChartData = mockData.historicalUtilization.labels.map((month, index) => ({
+  month,
+  utilization: mockData.historicalUtilization.data[index]
+}))
 
-interface SkillDemandData extends ChartData {
-  skill: string
-  Demand: number
-  "Available Consultants": number
-  "Skill Gap": number
-}
+// Format skill gap data for the chart
+const skillGapChartData = Object.entries(mockData.skillGaps).map(([skill, data]) => ({
+  skill,
+  required: data.required,
+  available: data.available,
+  gap: data.required - data.available
+}))
 
 export default function Home() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const consultantSortBy = "score"
-  const projectSortBy = "priority"
-
-  // Calculate metrics
-  const highPriorityProjects = projects.filter(p => p.priority === "High").length
-  const availableConsultants = consultants.filter(c => c.availability.includes("Available")).length
-
-  // Prepare chart data
-  const monthlyProjectData: ProjectActivityData[] = analytics.monthlyStats.map(stat => ({
-    month: stat.month,
-    "Projects Started": stat.projectsStarted,
-    "Projects Completed": stat.projectsCompleted,
-    "Active Consultants": stat.activeConsultants
-  }))
-
-  const skillDemandData: SkillDemandData[] = analytics.skillDemand.map(skill => ({
-    skill: skill.skill,
-    Demand: skill.demand,
-    "Available Consultants": skill.availableConsultants,
-    "Skill Gap": Math.max(0, skill.demand - skill.availableConsultants)
-  }))
-
-  // Calculate total skill gap percentage for donut chart
-  const totalSkillGap = skillDemandData.reduce((acc, curr) => acc + curr["Skill Gap"], 0)
-  const totalDemand = skillDemandData.reduce((acc, curr) => acc + curr.Demand, 0)
-  const skillGapPercentage = (totalSkillGap / totalDemand) * 100
-
-  const skillGapDonutData = [
-    { name: "Covered", value: 100 - skillGapPercentage },
-    { name: "Gap", value: skillGapPercentage }
-  ]
-
-  // Filter consultants and projects based on search
-  const filteredConsultants = consultants
-    .filter(consultant => 
-      consultant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      consultant.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      consultant.skills.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()))
-    )
-    .sort((a, b) => {
-      if (consultantSortBy === "score") return b.score - a.score
-      if (consultantSortBy === "rating") return b.rating - a.rating
-      return b.experience - a.experience
-    })
-
-  const filteredProjects = projects
-    .filter(project =>
-      project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      project.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      project.skills.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()))
-    )
-    .sort((a, b) => {
-      const priorityMap: Record<string, number> = { High: 3, Medium: 2, Low: 1 }
-      if (projectSortBy === "priority") 
-        return priorityMap[b.priority] - priorityMap[a.priority]
-      return new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
-    })
-
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
-      <Card className="border-none bg-gradient-to-r from-primary/10 via-primary/5 to-background">
+      <Card className="border-none bg-gradient-to-r from-purple-500/10 via-indigo-500/5 to-background">
         <CardHeader>
           <div className="flex flex-col space-y-2">
-            <CardTitle className="text-2xl font-semibold tracking-tight">Dashboard</CardTitle>
+            <CardTitle className="text-2xl font-semibold tracking-tight">Resource Analytics</CardTitle>
             <p className="text-muted-foreground text-sm">
-              Overview of your consultants, projects, and key metrics.
+              Real-time insights into resource allocation and skill gaps.
             </p>
           </div>
         </CardHeader>
       </Card>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="card-gradient">
+        <Card className="bg-gradient-to-br from-red-500/10 to-orange-500/10">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative">
-            <CardTitle className="text-sm font-medium">Total Consultants</CardTitle>
+            <CardTitle className="text-sm font-medium">Critical Skill Gaps</CardTitle>
+            <AlertTriangle className="h-4 w-4 text-orange-500" />
           </CardHeader>
           <CardContent className="relative">
-            <div className="text-2xl font-bold">{analytics.consultantMetrics.totalConsultants}</div>
+            <div className="text-2xl font-bold">{mockData.staffingMetrics.criticalSkillGaps}</div>
             <p className="text-xs text-muted-foreground">
-              {availableConsultants} currently available
+              High priority skills needed
             </p>
           </CardContent>
         </Card>
-        <Card className="card-gradient">
+        
+        <Card className="bg-gradient-to-br from-green-500/10 to-emerald-500/10">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative">
-            <CardTitle className="text-sm font-medium">Active Projects</CardTitle>
+            <CardTitle className="text-sm font-medium">Resource Utilization</CardTitle>
+            <Users className="h-4 w-4 text-emerald-500" />
           </CardHeader>
           <CardContent className="relative">
-            <div className="text-2xl font-bold">{analytics.projectMetrics.activeProjects}</div>
+            <div className="text-2xl font-bold">{mockData.utilizationRate}%</div>
             <p className="text-xs text-muted-foreground">
-              {highPriorityProjects} high priority
+              Current utilization rate
             </p>
           </CardContent>
         </Card>
-        <Card className="card-gradient">
+
+        <Card className="bg-gradient-to-br from-yellow-500/10 to-amber-500/10">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative">
-            <CardTitle className="text-sm font-medium">Average Rating</CardTitle>
+            <CardTitle className="text-sm font-medium">Unassigned Resources</CardTitle>
+            <Clock className="h-4 w-4 text-amber-500" />
           </CardHeader>
           <CardContent className="relative">
-            <div className="text-2xl font-bold">{analytics.consultantMetrics.averageRating.toFixed(1)}</div>
+            <div className="text-2xl font-bold">{mockData.staffingMetrics.unassignedConsultants}</div>
             <p className="text-xs text-muted-foreground">
-              Across all consultants
+              Available consultants
             </p>
           </CardContent>
         </Card>
-        <Card className="card-gradient">
+
+        <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative">
-            <CardTitle className="text-sm font-medium">Success Rate</CardTitle>
+            <CardTitle className="text-sm font-medium">Avg. Time to Staff</CardTitle>
+            <CheckCircle2 className="h-4 w-4 text-cyan-500" />
           </CardHeader>
           <CardContent className="relative">
-            <div className="text-2xl font-bold">{analytics.projectMetrics.successRate}%</div>
+            <div className="text-2xl font-bold">{mockData.avgTimeToStaff}d</div>
             <p className="text-xs text-muted-foreground">
-              {analytics.projectMetrics.completedProjects} projects completed
+              Average staffing time
             </p>
           </CardContent>
         </Card>
       </div>
 
-      <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-3 card-gradient">
-          <CardHeader className="relative">
-            <CardTitle>Project Activity</CardTitle>
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Historical Utilization</CardTitle>
           </CardHeader>
-          <CardContent className="relative">
-            <AreaChart
-              data={monthlyProjectData}
-              index="month"
-              categories={["Projects Started", "Projects Completed", "Active Consultants"]}
-              colors={["#0F172A", "#334155", "#64748B"]}
-              className="h-72"
-            />
+          <CardContent>
+            <div className="h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={utilizationChartData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis domain={[0, 100]} />
+                  <Tooltip 
+                    formatter={(value) => [`${value}%`, 'Utilization']}
+                    labelFormatter={(label) => `Month: ${label}`}
+                  />
+                  <Legend />
+                  <Line 
+                    type="monotone" 
+                    dataKey="utilization" 
+                    name="Utilization Rate" 
+                    stroke="#4f46e5" 
+                    strokeWidth={2}
+                    dot={{ fill: '#4f46e5' }}
+                    activeDot={{ r: 6 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
           </CardContent>
         </Card>
-        <Card className="col-span-2 card-gradient">
-          <CardHeader className="relative">
-            <CardTitle>Skill Gap Analysis</CardTitle>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Skill Gap Analysis</CardTitle>
           </CardHeader>
-          <CardContent className="relative">
-            <BarChart
-              data={skillDemandData}
-              index="skill"
-              categories={["Demand", "Available Consultants", "Skill Gap"]}
-              colors={["#0F172A", "#334155", "#64748B"]}
-              className="h-72"
-            />
-          </CardContent>
-        </Card>
-        <Card className="col-span-2 card-gradient">
-          <CardHeader className="relative">
-            <CardTitle>Overall Skill Coverage</CardTitle>
-          </CardHeader>
-          <CardContent className="relative flex flex-col items-center">
-            <DonutChart
-              data={skillGapDonutData}
-              category="value"
-              index="name"
-              colors={["#0F172A", "#64748B"]}
-              className="h-72"
-            />
-            <div className="text-center mt-4">
-              <p className="text-sm text-muted-foreground">
-                {skillGapPercentage.toFixed(1)}% skill gap across all projects
-              </p>
+          <CardContent>
+            <div className="h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={skillGapChartData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="skill" />
+                  <YAxis />
+                  <Tooltip 
+                    formatter={(value, name) => [value, name.charAt(0).toUpperCase() + name.slice(1)]}
+                    labelFormatter={(label) => `Skill: ${label}`}
+                  />
+                  <Legend />
+                  <Bar dataKey="required" name="Required" fill="#8884d8" />
+                  <Bar dataKey="available" name="Available" fill="#82ca9d" />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
           </CardContent>
         </Card>
       </div>
-      <div className="space-y-4">
-        <Card className="card-gradient">
-          <CardContent className="py-4">
-            <div className="flex items-center justify-between">
-              <Input
-                placeholder="Search consultants or projects..."
-                className="max-w-sm"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <div className="space-x-2">
-                <Button className="btn-primary">
-                  <UserPlus className="mr-2 h-4 w-4" />
-                  Add Consultant
-                </Button>
-                <Button className="btn-primary">
-                  <FolderPlus className="mr-2 h-4 w-4" />
-                  Add Project
-                </Button>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Staffing Overview</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">Understaffed Projects</p>
+                  <p className="text-sm text-muted-foreground">Projects needing resources</p>
+                </div>
+                <span className="text-2xl font-bold text-red-500">
+                  {mockData.staffingMetrics.understaffedProjects}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">Overstaffed Projects</p>
+                  <p className="text-sm text-muted-foreground">Projects with excess resources</p>
+                </div>
+                <span className="text-2xl font-bold text-yellow-500">
+                  {mockData.staffingMetrics.overstaffedProjects}
+                </span>
               </div>
             </div>
           </CardContent>
         </Card>
-      </div>
-      <div>
 
-        <Tabs defaultValue="consultants" className="space-y-4">
-          <TabsList className="bg-gradient-primary">
-            <TabsTrigger value="consultants" className="data-[state=active]:bg-white/10">Consultants</TabsTrigger>
-            <TabsTrigger value="projects" className="data-[state=active]:bg-white/10">Projects</TabsTrigger>
-          </TabsList>
-          <TabsContent value="consultants" className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {filteredConsultants.map(consultant => (
-                <ConsultantCard key={consultant.id} consultant={consultant} />
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle className="text-lg">Upcoming Staffing Needs</CardTitle>
+            <Calendar className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4 max-h-[200px] overflow-y-auto pr-2">
+              {mockData.upcomingStaffingNeeds.map((need, index) => (
+                <div key={index} className="flex items-center justify-between border-b pb-2 last:border-0">
+                  <div>
+                    <p className="font-medium">{need.project}</p>
+                    <div className="flex items-center gap-1 text-sm">
+                      <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 text-xs">
+                        {need.skill}
+                      </span>
+                      <span className="text-muted-foreground">
+                        • {need.startDate}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="flex items-center gap-2">
+                      <span className={`text-sm font-semibold ${need.potentialMatches === 0 ? 'text-red-500' : need.potentialMatches >= need.needed ? 'text-green-500' : 'text-amber-500'}`}>
+                        {need.potentialMatches}/{need.needed}
+                      </span>
+                      <ArrowRight className="h-3 w-3 text-muted-foreground" />
+                    </div>
+                    <span className="text-xs text-muted-foreground">
+                      Potential matches
+                    </span>
+                  </div>
+                </div>
               ))}
             </div>
-          </TabsContent>
-          <TabsContent value="projects" className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {filteredProjects.length > 0 ? (
-                filteredProjects.map(project => (
-                  <ProjectCard key={project.id} project={project} />
-                ))
-              ) : (
-                <div className="col-span-full text-center py-8 text-muted-foreground">
-                  No projects found matching your search criteria
-                </div>
-              )}
+            <div className="pt-4 mt-2 border-t">
+              <button className="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                View all upcoming staffing needs
+              </button>
             </div>
-          </TabsContent>
-        </Tabs>
+          </CardContent>
+        </Card>
       </div>
+
     </div>
   )
 }

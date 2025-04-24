@@ -1,8 +1,8 @@
-import { Users } from "lucide-react"
+import { Calendar, MapPin, Coins } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ProjectDetailsDialog } from "@/components/project-details-dialog"
-import type { Project } from "@/data/mock-data"
+import type { Project } from "@/lib/supabase"
 
 interface ProjectCardProps {
   project: Project
@@ -14,34 +14,8 @@ export function ProjectCard({ project }: ProjectCardProps) {
       <CardContent className="p-6">
         <div className="flex justify-between items-start">
           <h3 className="font-medium text-lg bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
-            {project.title}
+            {project.name}
           </h3>
-          <Badge 
-            variant={project.priority === "High" ? "destructive" : "outline"}
-            className={project.priority === "High" ? "bg-gradient-to-r from-red-500 to-pink-500 border-none text-white" : ""}
-          >
-            {project.priority}
-          </Badge>
-        </div>
-
-        <p className="text-sm text-muted-foreground mt-1">{project.client}</p>
-
-        <div className="mt-4">
-          <div className="flex flex-wrap gap-2">
-            {project.skills.map((skill) => (
-              <Badge 
-                key={skill} 
-                variant="secondary" 
-                className="text-xs bg-white/80 hover:bg-white transition-colors"
-              >
-                {skill}
-              </Badge>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-4 flex justify-between items-center">
-          <span className="text-sm text-muted-foreground">Duration: {project.duration}</span>
           <Badge 
             variant="outline"
             className={
@@ -56,11 +30,45 @@ export function ProjectCard({ project }: ProjectCardProps) {
           </Badge>
         </div>
 
-        <div className="mt-4 flex items-center text-sm text-muted-foreground">
-          <Users className="h-4 w-4 mr-1 text-purple-500" />
-          <span>
-            {project.consultantsNeeded} consultant{project.consultantsNeeded > 1 ? "s" : ""} needed
-          </span>
+        <div className="mt-4">
+          <div className="flex flex-wrap gap-2">
+            {project.requirements.map((req, index) => (
+              <Badge 
+                key={`${req.skill}-${index}`}
+                variant="secondary" 
+                className="text-xs bg-white/50 flex items-center gap-1"
+              >
+                <span>{req.skill}</span>
+                {req.amount && (
+                  <span className="text-muted-foreground">
+                    ({req.amount})
+                  </span>
+                )}
+                {req.recommendedSeniority && (
+                  <span className="text-xs text-muted-foreground ml-1">
+                    • {req.recommendedSeniority}
+                  </span>
+                )}
+              </Badge>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-6 space-y-3">
+          <div className="flex items-center gap-2">
+            <Calendar className="h-4 w-4 text-purple-500" />
+            <span className="text-sm text-muted-foreground">
+              {new Date(project.start_date).toLocaleDateString()} - {project.end_date ? new Date(project.end_date).toLocaleDateString() : 'TBD'}
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <MapPin className="h-4 w-4 text-indigo-500" />
+            <span className="text-sm text-muted-foreground">{project.location}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Coins className="h-4 w-4 text-blue-500" />
+            <span className="text-sm text-muted-foreground">Budget: ${project.budget.toLocaleString()}</span>
+          </div>
         </div>
 
         <div className="mt-4 flex justify-end">
