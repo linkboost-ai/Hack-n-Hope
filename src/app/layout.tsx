@@ -8,6 +8,14 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Hack-n-Hope",
   description: "Consultant matching platform",
+  icons: {
+    icon: [
+      {
+        url: "/globe.svg",
+        href: "/globe.svg"
+      }
+    ]
+  }
 };
 
 export default function RootLayout({
