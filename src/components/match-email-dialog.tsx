@@ -40,7 +40,7 @@ Project Details:
 - Location: ${project.location}
 
 Required Skills:
-${project.skills.map(skill => `- ${skill}`).join('\n')}
+${project?.skills?.map((skill: string) => `- ${skill}`).join('\n')}
 
 Based on our matching system, you have a strong compatibility score for this project. We believe this opportunity would be an excellent fit for your expertise.
 

@@ -13,7 +13,7 @@ export interface Consultant {
   seniority: string
   description: string
   certificates: string
-  technologies: string
+  technologies: string[] | string
   languages_spc: string
 }
 
@@ -25,7 +25,7 @@ interface Requirement {
 
 export interface Project {
   id: string
-  status: 'Not Started' | 'In Progress' | 'Completed'
+  status: 'DRAFT' | 'SUBMITTED' | 'INTERNAL_REVIEW' | 'INTERNAL_APPROVED' | 'CUSTOMER_REVIEW' | 'CUSTOMER_APPROVED' | 'FINALIZING'
   start_date: string
   end_date: string | null
   name: string

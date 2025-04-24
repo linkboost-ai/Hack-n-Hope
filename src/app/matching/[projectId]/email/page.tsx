@@ -34,7 +34,7 @@ export default function EmailPage({
     try {
       // Load project details
       const { data: projectData } = await supabase
-        .from("project")
+        .from("Projects")
         .select("*")
         .eq("id", params.projectId)
         .single()
@@ -49,7 +49,7 @@ export default function EmailPage({
       // Load consultant details
       if (consultantIds.length > 0) {
         const { data: consultantsData } = await supabase
-          .from("consultant")
+          .from("Consultants")
           .select("*")
           .in("id", consultantIds)
 
@@ -94,7 +94,7 @@ Your Project Team`
       
       // Update project status
       await supabase
-        .from("project")
+        .from("Projects")
         .update({ status: "In Progress" })
         .eq("id", params.projectId)
 

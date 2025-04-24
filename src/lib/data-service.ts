@@ -34,7 +34,7 @@ export async function getConsultants() {
 
   console.log('Fetching consultants...')
   const { data, error } = await supabase
-    .from('consultant')  // Changed from 'Consultants' to 'consultant'
+    .from('Consultants')  // Changed to match the actual table name
     .select('*')
     .order('created_at', { ascending: false })
   
@@ -72,7 +72,7 @@ export async function getProjects() {
 
   console.log('Fetching projects...')
   const { data, error } = await supabase
-    .from('project')  // Changed from 'Projects' to 'project'
+    .from('Projects')  // Changed to match the actual table name
     .select('*')
     .order('created_at', { ascending: false })
   
@@ -109,7 +109,7 @@ export async function getMatches() {
   }
 
   const { data, error } = await supabase
-    .from('matches')  // Changed from 'match' to 'matches'
+    .from('Matches')  // Changed from 'match' to 'matches'
     .select('*')
     .order('created_at', { ascending: false })
   
@@ -134,7 +134,7 @@ export async function getMatchesByProject(projectId: string) {
   }
 
   const { data, error } = await supabase
-    .from('matches')  // Changed from 'Matches' to 'matches'
+    .from('Matches')  // Changed to match the actual table name
     .select('*')
     .eq('project_id', projectId)
     .order('score', { ascending: false })
@@ -160,7 +160,7 @@ export async function getMatchesByConsultant(consultantId: string) {
   }
 
   const { data, error } = await supabase
-    .from('matches')  // Changed from 'Matches' to 'matches'
+    .from('Matches')  // Changed to match the actual table name
     .select('*')
     .eq('consultant_id', consultantId)
     .order('created_at', { ascending: false })

@@ -19,11 +19,21 @@ export function ProjectCard({ project }: ProjectCardProps) {
           <Badge 
             variant="outline"
             className={
-              project.status === "Not Started" 
+              project.status === "DRAFT" 
+                ? "text-slate-600 bg-slate-50 border-slate-200"
+                : project.status === "SUBMITTED"
+                ? "text-purple-600 bg-purple-50 border-purple-200"
+                : project.status === "INTERNAL_REVIEW"
                 ? "text-amber-600 bg-amber-50 border-amber-200"
-                : project.status === "In Progress"
+                : project.status === "INTERNAL_APPROVED"
+                ? "text-green-600 bg-green-50 border-green-200"
+                : project.status === "CUSTOMER_REVIEW"
                 ? "text-blue-600 bg-blue-50 border-blue-200"
-                : "text-green-600 bg-green-50 border-green-200"
+                : project.status === "CUSTOMER_APPROVED"
+                ? "text-emerald-600 bg-emerald-50 border-emerald-200"
+                : project.status === "FINALIZING"
+                ? "text-indigo-600 bg-indigo-50 border-indigo-200"
+                : "text-gray-600 bg-gray-50 border-gray-200"
             }
           >
             {project.status}
