@@ -13,9 +13,9 @@ Our primary customers are IT consulting firms with 50 or more consultants, rangi
 
 ### Revenue Model
 We generate revenue through:
-- A one-time setup fee: **[TO BE FILLED]**
-- Annual license fees based on the number of consultants: **[TO BE FILLED]**
-- Optional support packages: **[TO BE FILLED]**
+- A one-time setup fee: **5.000€**
+- Annual license fees based on the number of consultants: **200€ per consultant**
+- Optional support packages: **10% of license fee**
 
 ### Differentiation
 Unlike competitors, our approach is human-centric. We focus on enhancing rather than replacing staffing roles. Our solution uniquely emphasizes the development and satisfaction of consultants, which is currently an underserved area in the market.
@@ -41,7 +41,7 @@ Unlike competitors, our approach is human-centric. We focus on enhancing rather 
 
 ### Competitor Landscape
 Key players in consultant-project matching:
-- COMATCH: Matching platform for independent consultants and experts ([Wikipedia](https://de.wikipedia.org/wiki/COMATCH))
+- Napta: Workforce planning and project allocation platform for consulting firms, with AI-powered matching of consultants to internal projects. ([Napta](https://www.napta.io/))
 - Lyncronize: AI-based IT service provider matching ([Lyncronize](https://lyncronize.com))
 - Matchilla: Procurement and matching platform ([Matchilla](https://matchilla.de))
 - IT2match: IT services and software matching ([IT2match](https://www.it2match.de))
@@ -66,11 +66,6 @@ Thousands of mid-sized IT consulting firms worldwide still use manual or semi-au
 - Problem: High cost of misallocation and churn
 - Solution: Efficiency, satisfaction, retention
 
-### Business Model
-- Setup fee: **[TO BE FILLED]** (e.g. €5,000–15,000)
-- Annual license: **[TO BE FILLED]** (e.g. €100–300 per consultant)
-- Support: **[TO BE FILLED]** (e.g. 10–20% of license fee)
-
 ### Competitive Edge
 - Human-centric approach
 - Focus on consultant development and satisfaction
@@ -82,7 +77,10 @@ Thousands of mid-sized IT consulting firms worldwide still use manual or semi-au
 - Future features: predictive matching, data insights, skill analytics
 
 ### Traction
-- MVP in development / Pilot phase **[TO BE FILLED: CURRENT STATUS]**
+- Working MVP to demo
+
+### Investment Sought
+- We are seeking an investment of **€430,000** to scale product development, accelerate go-to-market strategy, and onboard key customers.
 
 ### Exit Options
 - Strategic buyers: ERP vendors, HR tech providers, global consultancies
