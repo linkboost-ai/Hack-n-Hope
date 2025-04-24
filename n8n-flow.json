@@ -1,0 +1,372 @@
+{
+  "name": "Exxeta Multiagent System",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "7fbe44d7-4bfd-4c73-b974-38ee111b45f9",
+      "name": "ChatGPT",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        440,
+        80
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "hTcLcZrE8My6KNA2",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "You are an intelligent matching agent for IT projects. Your task is to match consultants with a given project and deliver the best candidates with a score (0-100) and a short justification why that score is justified and why the consultant is suited for that project. If available match roughly 1.5x the amount of Consultants that is requested for the project to let the human staffer some room for descision. Therefore always fetch the list of consultants from the database and the project information from the database to take into consideration.",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "id": "13b3f61a-3982-4c28-a0dd-0b8698a2c947",
+      "name": "Skill Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        532,
+        -140
+      ]
+    },
+    {
+      "parameters": {
+        "tableId": "Projects",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "status",
+              "fieldValue": "SUBMITTED"
+            },
+            {
+              "fieldId": "start_date",
+              "fieldValue": "={{ $json.body.projectApplication.projectDetails.startDate }}"
+            },
+            {
+              "fieldId": "end_date",
+              "fieldValue": "={{ $json.body.projectApplication.projectDetails.endDate }}"
+            },
+            {
+              "fieldId": "name",
+              "fieldValue": "={{ $json.body.projectApplication.projectDetails.projectName }}"
+            },
+            {
+              "fieldId": "description",
+              "fieldValue": "={{ $json.body.projectApplication.projectDetails.description }}"
+            },
+            {
+              "fieldId": "location",
+              "fieldValue": "={{ $json.body.projectApplication.projectDetails.location }}"
+            },
+            {
+              "fieldId": "budget",
+              "fieldValue": "={{ $json.body.projectApplication.projectDetails.budget }}"
+            },
+            {
+              "fieldId": "created_at",
+              "fieldValue": "={{ $now }}"
+            },
+            {
+              "fieldId": "requirements",
+              "fieldValue": "={{ $json.body.projectApplication.projectDetails.requirements }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        240,
+        -140
+      ],
+      "id": "2a41643c-66ad-4817-ac7e-a223f13ee7af",
+      "name": "Create Project in DB",
+      "credentials": {
+        "supabaseApi": {
+          "id": "XWSA333gjnSlUnlI",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "0457cf40-f02a-4dd9-b09a-e527ae7b4ea8",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        -140
+      ],
+      "id": "79223650-9aa8-47db-b64f-ee43f6108e2a",
+      "name": "Webhook",
+      "webhookId": "0457cf40-f02a-4dd9-b09a-e527ae7b4ea8"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "Consultants",
+        "returnAll": true,
+        "filterType": "none"
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        560,
+        80
+      ],
+      "id": "57748ba3-2c35-46b8-8d3d-55e17ab38807",
+      "name": "Consultants",
+      "credentials": {
+        "supabaseApi": {
+          "id": "XWSA333gjnSlUnlI",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"consultant_uuid\": {\n        \"type\": \"string\",\n        \"description\": \"The UUID of the consultant\"\n      },\n      \"score\": {\n        \"type\": \"integer\",\n        \"minimum\": 0,\n        \"maximum\": 100,\n        \"description\": \"Matching-Score between 0 and 100\"\n      },\n      \"reason\": {\n        \"type\": \"string\",\n        \"description\": \"Reasoning for choosing this consultant with that score\"\n      }\n    },\n    \"required\": [\"consultant_uuid\", \"score\", \"reason\"]\n  }\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        800,
+        80
+      ],
+      "id": "f6eb531d-8385-44e4-803b-73c367c0a0ae",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "tableId": "Matches",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "project_id",
+              "fieldValue": "={{ $('Create Project in DB').item.json.id }}"
+            },
+            {
+              "fieldId": "consultant_id",
+              "fieldValue": "={{ $json.consultant_uuid }}"
+            },
+            {
+              "fieldId": "score",
+              "fieldValue": "={{ $json.score }}"
+            },
+            {
+              "fieldId": "description",
+              "fieldValue": "={{ $json.reason }}"
+            },
+            {
+              "fieldId": "type",
+              "fieldValue": "INTERNAL"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1220,
+        -140
+      ],
+      "id": "89ecebe6-a60d-4d43-9aa4-146048147833",
+      "name": "Supabase",
+      "credentials": {
+        "supabaseApi": {
+          "id": "XWSA333gjnSlUnlI",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "output",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        -140
+      ],
+      "id": "2c12434b-c2f1-4810-b6d3-e2d289433c36",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "compare": "selectedFields",
+        "fieldsToCompare": "output",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        860,
+        -140
+      ],
+      "id": "4cabaffb-7d27-43ac-978d-e93df5487304",
+      "name": "Remove Duplicates"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Database to get the project information.",
+        "operation": "get",
+        "tableId": "Projects",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ $json.id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        680,
+        80
+      ],
+      "id": "a82e5694-5e00-42c7-88d0-1061bc1085bc",
+      "name": "Project",
+      "credentials": {
+        "supabaseApi": {
+          "id": "XWSA333gjnSlUnlI",
+          "name": "Supabase account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "ChatGPT": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Skill Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Create Project in DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Project in DB": {
+      "main": [
+        [
+          {
+            "node": "Skill Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultants": {
+      "ai_tool": [
+        [
+          {
+            "node": "Skill Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Skill Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Skill Agent": {
+      "main": [
+        [
+          {
+            "node": "Remove Duplicates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase": {
+      "main": [
+        []
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove Duplicates": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Project": {
+      "ai_tool": [
+        [
+          {
+            "node": "Skill Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e054c63f-9f5a-4cb2-9ff5-dd5a89dfb427",
+  "meta": {
+    "templateId": "self-building-ai-agent",
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a3d7ded1508b9fdcd914850bc70027c78c5be681b7903638e9461c3d081ca9fe"
+  },
+  "id": "DPHOnq2SRqSy8rvQ",
+  "tags": []
+}
