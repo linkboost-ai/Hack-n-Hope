@@ -1,22 +1,21 @@
-# Business Case: KI-gestütztes Matching für Beratungsunternehmen
+# Business Case: AI-Powered Matching for Consulting Firms
 
+## Business Idea
+Our solution provides an AI-powered matching system that helps IT consulting firms efficiently and accurately assign internal consultants to client projects. The goal is to reduce opportunity costs from underutilized capacity while also minimizing employee turnover.
 
-## Geschäftsidee
-Unsere Lösung bietet ein KI-gestütztes Matching-System, das IT-Beratungsunternehmen dabei unterstützt, interne Berater effizient und gezielt auf Kundenprojekte zuzuordnen. Ziel ist es, Opportunitätskosten durch ungenutzte Kapazitäten zu verringern und gleichzeitig die Mitarbeiterfluktuation zu reduzieren.
+## Problem Statement
+Many consulting firms struggle with inefficient resource allocation, resulting in over- or understaffing. At the same time, individual skillsets and development goals of consultants are often overlooked. This not only affects project performance but also reduces employee satisfaction and retention.
 
-## Problemstellung
-Viele Beratungsunternehmen leiden unter ineffizienter Ressourcenzuweisung, die zu Over- oder Understaffing führt. Gleichzeitig bleiben individuelle Skillsets und Entwicklungsziele der Berater oft unberücksichtigt. Dies beeinträchtigt nicht nur die Projektperformance, sondern auch die Zufriedenheit und Bindung der Mitarbeitenden.
+## Solution
+Our platform analyzes projects, skillsets, availability, and personal development goals to ensure optimal staffing. Data-driven decisions lead to better workload distribution and higher consultant satisfaction.
 
-## Lösung
-Unsere Plattform analysiert Projekte, Skillsets, Verfügbarkeiten und Weiterentwicklungsziele der Berater, um eine optimale Besetzung sicherzustellen. Durch datengetriebene Entscheidungen entsteht eine bessere Workload-Verteilung sowie eine höhere Mitarbeiterzufriedenheit.
+## Target Audience
+IT consulting firms with at least 50 consultants that value efficiency, employee retention, and high-quality project staffing.
 
-## Zielgruppe
-IT-Beratungsfirmen mit mindestens 50 Beratern, die Wert auf Effizienz, Mitarbeiterbindung und qualitative Projektbesetzung legen.
+## Business Model
+- One-time setup fee  
+- Annual license fees (scaled by the number of consultants)  
+- Optional support and service packages
 
-## Geschäftsmodell
-- Einmalige Einrichtungsgebühr  
-- Jährliche Lizenzkosten (skaliert mit der Anzahl der Berater)  
-- Optionale Support- und Servicepakete
-
-## Wettbewerbsvorteil
-Im Gegensatz zu rein operativen Tools setzen wir auf einen human-centric Ansatz: Wir ersetzen keine Staffing-Rollen, sondern erweitern ihre Möglichkeiten durch datenbasierte Intelligenz. Der Fokus liegt nicht nur auf Projektbesetzung, sondern auch auf der individuellen Weiterentwicklung der Berater – ein bislang vernachlässigter Aspekt im Markt.
+## Competitive Advantage
+Unlike purely operational tools, we follow a human-centric approach: we don’t replace staffing roles, but enhance them through data-driven intelligence. Our focus is not only on project staffing but also on the personal growth and development of consultants – a currently underserved area in the market.
