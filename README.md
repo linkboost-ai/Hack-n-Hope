@@ -3,7 +3,7 @@
 ## Install dependencies
 
 ```nodejs
-npp i
+npm i
 ```
 
 ## Run the project
