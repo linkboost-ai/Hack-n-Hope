@@ -25,10 +25,8 @@ Unlike competitors, our approach is human-centric. We focus on enhancing rather 
 ## Market Research
 
 ### Market Size & Growth
-- The global IT consulting market is projected to reach $1 trillion USD by 2025, with a CAGR of 6.2%.  
-  Source: [BusinessPlanTemplates](https://businessplan-templates.com/blogs/profits/it-consulting-services)
-- Example: Accenture reported $64.9 billion USD in revenue in 2024.  
-  Source: [Wikipedia - Accenture](https://de.wikipedia.org/wiki/Accenture)
+- The global IT consulting market turnover is projected to reach €71,88bn by 2025, with a prognosed CAGR of 4,18% from 2025-2029.  
+  Source: [Statista](https://de.statista.com/outlook/tmo/it-services/it-beratung-implementierung/weltweit)
 
 ### Profitability & Margins
 - Industry average profit margins range from 10–30%, depending on specialization and efficiency.  
