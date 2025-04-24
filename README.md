@@ -1,21 +1,88 @@
-# Business Case: AI-Powered Matching for Consulting Firms
+# AI-Based Project Matching for Consulting Firms
 
-## Business Idea
-Our solution provides an AI-powered matching system that helps IT consulting firms efficiently and accurately assign internal consultants to client projects. The goal is to reduce opportunity costs from underutilized capacity while also minimizing employee turnover.
+## Business Case
 
-## Problem Statement
-Many consulting firms struggle with inefficient resource allocation, resulting in over- or understaffing. At the same time, individual skillsets and development goals of consultants are often overlooked. This not only affects project performance but also reduces employee satisfaction and retention.
+### Idea
+Our business idea is to develop an AI-powered matching system that assigns consultants from consulting firms to client projects. The goal is to minimize opportunity costs and reduce employee turnover.
 
-## Solution
-Our platform analyzes projects, skillsets, availability, and personal development goals to ensure optimal staffing. Data-driven decisions lead to better workload distribution and higher consultant satisfaction.
+### Problem We Solve
+We address the issue of over- and under-staffing by aligning workloads with consultants' skills and preferences. Furthermore, our solution enhances employee satisfaction by considering career development opportunities during the matching process.
 
-## Target Audience
-IT consulting firms with at least 50 consultants that value efficiency, employee retention, and high-quality project staffing.
+### Target Customers
+Our primary customers are IT consulting firms with 50 or more consultants, ranging from small to large organizations.
 
-## Business Model
-- One-time setup fee  
-- Annual license fees (scaled by the number of consultants)  
-- Optional support and service packages
+### Revenue Model
+We generate revenue through:
+- A one-time setup fee: **[TO BE FILLED]**
+- Annual license fees based on the number of consultants: **[TO BE FILLED]**
+- Optional support packages: **[TO BE FILLED]**
 
-## Competitive Advantage
-Unlike purely operational tools, we follow a human-centric approach: we don’t replace staffing roles, but enhance them through data-driven intelligence. Our focus is not only on project staffing but also on the personal growth and development of consultants – a currently underserved area in the market.
+### Differentiation
+Unlike competitors, our approach is human-centric. We focus on enhancing rather than replacing staffing roles. Our solution uniquely emphasizes the development and satisfaction of consultants, which is currently an underserved area in the market.
+
+---
+
+## Market Research
+
+### Market Size & Growth
+- The global IT consulting market is projected to reach $1 trillion USD by 2025, with a CAGR of 6.2%.  
+  Source: [BusinessPlanTemplates](https://businessplan-templates.com/blogs/profits/it-consulting-services)
+- Example: Accenture reported $64.9 billion USD in revenue in 2024.  
+  Source: [Wikipedia - Accenture](https://de.wikipedia.org/wiki/Accenture)
+
+### Profitability & Margins
+- Industry average profit margins range from 10–30%, depending on specialization and efficiency.  
+  Source: [Starteazy](https://starteazy.in/blog/profit-margin-in-it-consulting-the-good-and-the-bad)
+- Profit margins of top companies:
+  - TCS: >25%
+  - Infosys: 20–23%
+  - Accenture: ~13–15%
+  - Capgemini: ~10–12%
+
+### Competitor Landscape
+Key players in consultant-project matching:
+- COMATCH: Matching platform for independent consultants and experts ([Wikipedia](https://de.wikipedia.org/wiki/COMATCH))
+- Lyncronize: AI-based IT service provider matching ([Lyncronize](https://lyncronize.com))
+- Matchilla: Procurement and matching platform ([Matchilla](https://matchilla.de))
+- IT2match: IT services and software matching ([IT2match](https://www.it2match.de))
+- Planforge and Projektron BCS: Project management tools with resource planning ([Planforge](https://de.wikipedia.org/wiki/Planforge), [Projektron BCS](https://de.wikipedia.org/wiki/Projektron_BCS))
+
+### Customer Base
+Thousands of mid-sized IT consulting firms worldwide still use manual or semi-automated matching processes. High inefficiency and opportunity cost due to poor matching create demand for automation.
+
+### AI Relevance & Willingness to Pay
+- AI adoption can boost productivity in IT by up to 45%.  
+  Source: [Reuters on GenAI](https://www.reuters.com/technology/artificial-intelligence/genai-boost-indias-it-industrys-productivity-by-up-45-ey-india-survey-shows-2025-02-10/)
+- However, cost concerns can delay adoption.  
+  Source: [Reuters](https://www.reuters.com/technology/cost-concerns-could-delay-ai-ramp-up-among-it-clients-infosys-exec-says-2024-02-26/)
+
+---
+
+## Key Metrics for Investors
+
+### Why This Business Matters
+- Market size: $1T+ and growing
+- Consulting firms: Thousands of potential customers
+- Problem: High cost of misallocation and churn
+- Solution: Efficiency, satisfaction, retention
+
+### Business Model
+- Setup fee: **[TO BE FILLED]** (e.g. €5,000–15,000)
+- Annual license: **[TO BE FILLED]** (e.g. €100–300 per consultant)
+- Support: **[TO BE FILLED]** (e.g. 10–20% of license fee)
+
+### Competitive Edge
+- Human-centric approach
+- Focus on consultant development and satisfaction
+- Extendable to other sectors: finance, engineering, etc.
+
+### Scalability
+- Expandable SaaS model
+- High margins potential
+- Future features: predictive matching, data insights, skill analytics
+
+### Traction
+- MVP in development / Pilot phase **[TO BE FILLED: CURRENT STATUS]**
+
+### Exit Options
+- Strategic buyers: ERP vendors, HR tech providers, global consultancies
