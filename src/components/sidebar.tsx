@@ -1,41 +1,74 @@
-import type React from "react"
+"use client"
+
 import { cn } from "@/lib/utils"
-import { Cog, User, Users } from "lucide-react"
+import { Briefcase, Cog, LayoutDashboard, Puzzle, Users } from "lucide-react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 interface SidebarProps {
   className?: string
 }
 
 export function Sidebar({ className }: SidebarProps) {
+  const pathname = usePathname()
+
   return (
     <div
       className={cn(
-        "fixed left-0 top-0 h-screen w-64 rounded-r-xl flex flex-col items-center pt-10",
+        "min-w-64 h-screen flex flex-col items-center pt-10",
         "bg-gradient-to-b from-purple-500 via-purple-600 to-indigo-500",
+        "rounded-tr-2xl rounded-br-2xl",
         className,
       )}
     >
-      <div className="flex items-center gap-2 mb-16">
+      <div className="flex items-center gap-2 mb-8">
         <div className="h-px w-6 bg-white"></div>
         <span className="text-white text-2xl font-light">cinda</span>
         <div className="h-px w-6 bg-white"></div>
       </div>
 
-      <nav className="w-full px-6">
+      <nav className="w-full px-6 flex flex-col h-full">
         <ul className="space-y-4">
           <li>
-            <NavItem href="/matching" icon={<Users size={20} />} isActive>
-              Matching
+            <NavItem href="/" icon={<LayoutDashboard size={20} />} isActive={pathname === "/"}>
+              Dashboard
             </NavItem>
           </li>
           <li>
-            <NavItem href="/settings" icon={<Cog size={20} />}>
+            <NavItem href="/consultants" icon={<Users size={20} />} isActive={pathname === "/consultants"}>
+              Consultants
+            </NavItem>
+          </li>
+          <li>
+            <NavItem href="/projects" icon={<Briefcase size={20} />} isActive={pathname === "/projects"}>
+              Projects
+            </NavItem>
+          </li>
+          <li>
+            <NavItem href="/matching" icon={<Puzzle size={20} />} isActive={pathname === "/matching"}>
+              Matching
+            </NavItem>
+          </li>
+        </ul>
+
+        <ul className="space-y-4 mt-auto pb-8">
+          <li>
+            <NavItem href="/settings" icon={<Cog size={20} />} isActive={pathname === "/settings"}>
               Settings
             </NavItem>
           </li>
           <li>
-            <NavItem href="/profile" icon={<User size={20} />}>
+            <NavItem 
+              href="/profile" 
+              icon={
+                <Avatar className="h-6 w-6">
+                  <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Profile" />
+                  <AvatarFallback>U</AvatarFallback>
+                </Avatar>
+              } 
+              isActive={pathname === "/profile"}
+            >
               Profile
             </NavItem>
           </li>
