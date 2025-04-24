@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Project } from "@/lib/supabase"
-import { supabase } from "@/lib/supabase"
+import { Project, Consultant } from "@/lib/supabase"
+import { getProjects, getConsultants } from "@/lib/data-service"
 import { calculateMatchScore, createMatch } from "@/lib/matching-service"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -22,19 +22,17 @@ export function ProjectMatching() {
   }, [])
 
   const loadProjects = async () => {
-    const { data: projectsData, error } = await supabase
-      .from("Projects")
-      .select("*")
-      .eq("status", "Not Started")
-      .order("created_at", { ascending: false })
-    
-    if (error) {
+    try {
+      const projectsData = await getProjects()
+      console.log("All projects:", projectsData)
+      
+      // Filter for not started projects only
+      const notStartedProjects = projectsData.filter(p => p.status === "Not Started")
+      console.log("Not started projects:", notStartedProjects)
+      
+      setProjects(notStartedProjects)
+    } catch (error) {
       console.error("Error loading projects:", error)
-      return
-    }
-    
-    if (projectsData) {
-      setProjects(projectsData)
     }
   }
 
@@ -51,14 +49,11 @@ export function ProjectMatching() {
       if (!selectedProject) return
 
       // Load all consultants
-      const { data: consultants } = await supabase
-        .from("consultant")
-        .select("*")
-
-      if (!consultants) return
+      const consultants = await getConsultants()
+      if (!consultants.length) return
 
       // Calculate and create matches for all consultants
-      const matchPromises = consultants.map(async (consultant) => {
+      const matchPromises = consultants.map(async (consultant: Consultant) => {
         const score = await calculateMatchScore(consultant, selectedProject)
         return createMatch(selectedProject.id, consultant.id, score)
       })
