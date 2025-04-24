@@ -26,9 +26,6 @@ export function ConsultantCard({ consultant }: ConsultantCardProps) {
               <p className="text-sm text-muted-foreground">{consultant.role}</p>
             </div>
           </div>
-          <Badge className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white border-none hover:from-purple-600 hover:to-indigo-600">
-            {consultant.score}
-          </Badge>
         </div>
 
         <div className="mt-6 space-y-3">

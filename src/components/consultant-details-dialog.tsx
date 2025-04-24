@@ -52,7 +52,6 @@ export function ConsultantDetailsDialog({ consultant }: ConsultantDetailsDialogP
                 >
                   {consultant.availability}
                 </Badge>
-                <Badge className="bg-purple-100 text-purple-800">{consultant.score} Score</Badge>
               </div>
             </div>
           </div>

@@ -199,26 +199,31 @@ export default function Home() {
           </CardContent>
         </Card>
       </div>
-
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <Input
-            placeholder="Search consultants or projects..."
-            className="max-w-sm"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <div className="space-x-2">
-            <Button className="btn-primary">
-              <UserPlus className="mr-2 h-4 w-4" />
-              Add Consultant
-            </Button>
-            <Button className="btn-primary">
-              <FolderPlus className="mr-2 h-4 w-4" />
-              Add Project
-            </Button>
-          </div>
-        </div>
+        <Card className="card-gradient">
+          <CardContent className="py-4">
+            <div className="flex items-center justify-between">
+              <Input
+                placeholder="Search consultants or projects..."
+                className="max-w-sm"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <div className="space-x-2">
+                <Button className="btn-primary">
+                  <UserPlus className="mr-2 h-4 w-4" />
+                  Add Consultant
+                </Button>
+                <Button className="btn-primary">
+                  <FolderPlus className="mr-2 h-4 w-4" />
+                  Add Project
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+      <div>
 
         <Tabs defaultValue="consultants" className="space-y-4">
           <TabsList className="bg-gradient-primary">
@@ -234,9 +239,15 @@ export default function Home() {
           </TabsContent>
           <TabsContent value="projects" className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {filteredProjects.map(project => (
-                <ProjectCard key={project.id} project={project} />
-              ))}
+              {filteredProjects.length > 0 ? (
+                filteredProjects.map(project => (
+                  <ProjectCard key={project.id} project={project} />
+                ))
+              ) : (
+                <div className="col-span-full text-center py-8 text-muted-foreground">
+                  No projects found matching your search criteria
+                </div>
+              )}
             </div>
           </TabsContent>
         </Tabs>

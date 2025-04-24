@@ -5,18 +5,35 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { consultants, projects } from "@/data/mock-data"
-import { Star, Users, Briefcase, Calendar, Clock, Mail, CheckCircle2, Send } from "lucide-react"
+import { Star, Users, Briefcase, Calendar, Clock, Mail, CheckCircle2, Send, XCircle, Calendar as CalendarIcon } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
 
-type MatchingStep = "selecting" | "emailing_consultants" | "waiting_acceptance" | "emailing_client" | "completed"
+type MatchingStep = "selecting" | "emailing_consultants" | "waiting_acceptance" | "emailing_client" | "waiting_client" | "completed"
 
 export default function MatchingPage() {
   const [selectedProject, setSelectedProject] = useState<typeof projects[0] | null>(null)
   const [assignedConsultants, setAssignedConsultants] = useState<Set<string>>(new Set())
   const [step, setStep] = useState<MatchingStep>("selecting")
   const [consultantResponses, setConsultantResponses] = useState<Set<string>>(new Set())
+  const [clientAccepted, setClientAccepted] = useState<boolean | null>(null)
+  const [emailTemplate, setEmailTemplate] = useState<string>("")
+  const [emailSubject, setEmailSubject] = useState<string>("")
+  const [selectedTemplate, setSelectedTemplate] = useState<string>("default")
 
   // Get available projects that haven't started
   const availableProjects = projects.filter(project => project.status === "Not Started")
@@ -74,10 +91,108 @@ export default function MatchingPage() {
     }, 2000)
   }
 
+  const getClientEmailTemplate = () => {
+    const templates = {
+      default: `Dear ${selectedProject?.client},
+
+We have successfully matched consultants for your project "${selectedProject?.title}".
+
+Selected Consultants:
+${Array.from(assignedConsultants).map(id => {
+  const consultant = consultants.find(c => c.id === id)
+  return `- ${consultant?.name} (${consultant?.role})`
+}).join('\n')}
+
+Project Details:
+- Start Date: ${selectedProject?.startDate}
+- Duration: ${selectedProject?.duration}
+- Required Skills: ${selectedProject?.skills.join(', ')}
+
+Please review the selected consultants and confirm if you would like to proceed with these assignments.
+
+Best regards,
+[Your Name]`,
+      detailed: `Dear ${selectedProject?.client},
+
+I hope this email finds you well. We have carefully reviewed and selected consultants for your project "${selectedProject?.title}".
+
+Selected Consultants and Their Qualifications:
+${Array.from(assignedConsultants).map(id => {
+  const consultant = consultants.find(c => c.id === id)
+  return `
+- ${consultant?.name}
+  Role: ${consultant?.role}
+  Experience: ${consultant?.experience} years
+  Rating: ${consultant?.rating}/5
+  Key Skills: ${consultant?.skills.join(', ')}`
+}).join('\n')}
+
+Project Timeline:
+- Start Date: ${selectedProject?.startDate}
+- Duration: ${selectedProject?.duration}
+
+Would you like to schedule a meeting to discuss these selections in detail?
+
+Best regards,
+[Your Name]`
+    }
+    return templates[selectedTemplate as keyof typeof templates] || templates.default
+  }
+
   const handleSendClientEmail = () => {
     // Mock sending email to client
     console.log('Sending email to client:', selectedProject?.client)
-    setStep("completed")
+    setStep("waiting_client")
+    // Mock client response after a delay
+    setTimeout(() => {
+      setClientAccepted(true)
+      setStep("completed")
+    }, 2000)
+  }
+
+  const getEmailTemplate = (consultantName: string) => {
+    const templates = {
+      default: `Dear ${consultantName},
+
+We have identified a potential project match that aligns with your skills and experience.
+
+Project Details:
+- Title: ${selectedProject?.title}
+- Client: ${selectedProject?.client}
+- Duration: ${selectedProject?.duration}
+- Start Date: ${selectedProject?.startDate}
+
+Required Skills:
+${selectedProject?.skills.map(skill => `- ${skill}`).join('\n')}
+
+Please review the project details and let us know if you would be interested in being considered for this role.
+
+Best regards,
+[Your Name]`,
+      urgent: `Dear ${consultantName},
+
+URGENT PROJECT OPPORTUNITY
+
+We have an urgent project that requires your expertise. Based on your skills and availability, we believe you would be an excellent fit.
+
+Project: ${selectedProject?.title}
+Client: ${selectedProject?.client}
+Start Date: ${selectedProject?.startDate}
+
+Please respond as soon as possible if you're interested in this opportunity.
+
+Best regards,
+[Your Name]`,
+      followUp: `Dear ${consultantName},
+
+I hope this email finds you well. I'm following up regarding the ${selectedProject?.title} project opportunity.
+
+Would you be available for a quick discussion about this role? We believe your experience would be valuable for this project.
+
+Best regards,
+[Your Name]`
+    }
+    return templates[selectedTemplate as keyof typeof templates] || templates.default
   }
 
   const getStepContent = () => {
@@ -87,7 +202,8 @@ export default function MatchingPage() {
       { label: "Select Consultants", step: "selecting" },
       { label: "Send Consultant Emails", step: "emailing_consultants" },
       { label: "Await Responses", step: "waiting_acceptance" },
-      { label: "Confirm with Client", step: "emailing_client" },
+      { label: "Send to Client", step: "emailing_client" },
+      { label: "Client Response", step: "waiting_client" },
       { label: "Completed", step: "completed" }
     ]
 
@@ -252,24 +368,255 @@ export default function MatchingPage() {
           </div>
         )}
 
+        {/* Consultant Selection */}
+        {step === "emailing_consultants" && (
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-sm font-medium text-muted-foreground">
+                Send Invitations to Selected Consultants
+              </h3>
+              <Badge variant="outline" className="px-3 py-1">
+                {consultantResponses.size} / {assignedConsultants.size} Sent
+              </Badge>
+            </div>
+
+            <div className="grid gap-3">
+              {Array.from(assignedConsultants).map(consultantId => {
+                const consultant = consultants.find(c => c.id === consultantId)
+                if (!consultant) return null
+                
+                const hasAccepted = consultantResponses.has(consultantId)
+                
+                return (
+                  <div 
+                    key={consultant.id}
+                    className={cn(
+                      "p-4 rounded-lg border transition-colors",
+                      hasAccepted && "border-green-500 bg-green-50/50"
+                    )}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <Avatar className="h-10 w-10">
+                          <AvatarImage src={consultant.avatar} />
+                          <AvatarFallback>{consultant.name.slice(0, 2)}</AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="font-medium">{consultant.name}</p>
+                          <p className="text-sm text-muted-foreground">{consultant.role}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        {hasAccepted ? (
+                          <>
+                            <CheckCircle2 className="w-5 h-5 text-green-500" />
+                            <span className="text-sm font-medium text-green-600">Email Sent</span>
+                          </>
+                        ) : (
+                          <>
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button variant="outline" size="sm" className="gap-2">
+                                  <Mail className="w-4 h-4" />
+                                  Send Email
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="max-w-2xl">
+                                <DialogHeader>
+                                  <DialogTitle>Send Email to {consultant.name}</DialogTitle>
+                                  <DialogDescription>
+                                    Customize the email message for this consultant.
+                                  </DialogDescription>
+                                </DialogHeader>
+                                <div className="space-y-4 py-4">
+                                  <div className="space-y-2">
+                                    <Label>Email Template</Label>
+                                    <Select
+                                      value={selectedTemplate}
+                                      onValueChange={setSelectedTemplate}
+                                    >
+                                      <SelectTrigger>
+                                        <SelectValue placeholder="Select a template" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        <SelectItem value="default">Standard Template</SelectItem>
+                                        <SelectItem value="urgent">Urgent Project</SelectItem>
+                                        <SelectItem value="followUp">Follow-up</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
+                                  <div className="space-y-2">
+                                    <Label>Subject</Label>
+                                    <Input
+                                      value={emailSubject || `Project Opportunity: ${selectedProject?.title}`}
+                                      onChange={(e) => setEmailSubject(e.target.value)}
+                                    />
+                                  </div>
+                                  <div className="space-y-2">
+                                    <Label>Message</Label>
+                                    <Textarea
+                                      value={emailTemplate || getEmailTemplate(consultant.name)}
+                                      onChange={(e) => setEmailTemplate(e.target.value)}
+                                      className="min-h-[300px] font-mono"
+                                    />
+                                  </div>
+                                </div>
+                                <DialogFooter className="gap-2">
+                                  <Button variant="outline" className="gap-2">
+                                    <CalendarIcon className="w-4 h-4" />
+                                    Schedule Meeting
+                                  </Button>
+                                  <Button onClick={() => {
+                                    console.log('Sending email to:', consultant.name)
+                                    // Mock email sending
+                                    setTimeout(() => {
+                                      setConsultantResponses(prev => {
+                                        const newResponses = new Set(prev)
+                                        newResponses.add(consultant.id)
+                                        return newResponses
+                                      })
+                                    }, 1000)
+                                  }} className="gap-2">
+                                    <Send className="w-4 h-4" />
+                                    Send Email
+                                  </Button>
+                                </DialogFooter>
+                              </DialogContent>
+                            </Dialog>
+                            <Button variant="outline" size="sm" className="gap-2">
+                              <CalendarIcon className="w-4 h-4" />
+                              Schedule
+                            </Button>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Consultant Responses */}
+        {(step === "waiting_acceptance" || step === "emailing_client" || step === "waiting_client" || step === "completed") && (
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-sm font-medium text-muted-foreground">
+                Responses
+              </h3>
+              <Badge variant="outline" className="px-3 py-1">
+                {consultantResponses.size} / {assignedConsultants.size} Accepted
+              </Badge>
+            </div>
+
+            <div className="grid gap-3">
+              {Array.from(assignedConsultants).map(consultantId => {
+                const consultant = consultants.find(c => c.id === consultantId)
+                if (!consultant) return null
+                
+                const hasAccepted = consultantResponses.has(consultantId)
+                
+                return (
+                  <div 
+                    key={consultant.id}
+                    className={cn(
+                      "p-4 rounded-lg border transition-colors",
+                      hasAccepted && "border-green-500 bg-green-50/50"
+                    )}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <Avatar className="h-10 w-10">
+                          <AvatarImage src={consultant.avatar} />
+                          <AvatarFallback>{consultant.name.slice(0, 2)}</AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="font-medium">{consultant.name}</p>
+                          <p className="text-sm text-muted-foreground">{consultant.role}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {hasAccepted ? (
+                          <>
+                            <CheckCircle2 className="w-5 h-5 text-green-500" />
+                            <span className="text-sm font-medium text-green-600">Accepted</span>
+                          </>
+                        ) : (
+                          <>
+                            <span className="inline-block w-4 h-4 border-2 border-current border-r-transparent rounded-full animate-spin" />
+                            <span className="text-sm text-muted-foreground">Awaiting Response...</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+
+              {/* Client Response Card */}
+              {(step === "waiting_client" || step === "completed") && (
+                <div 
+                  className={cn(
+                    "p-4 rounded-lg border transition-colors",
+                    clientAccepted && "border-green-500 bg-green-50/50"
+                  )}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                      <Avatar className="h-10 w-10">
+                        <AvatarFallback>{selectedProject.client.slice(0, 2)}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="font-medium">{selectedProject.client}</p>
+                        <p className="text-sm text-muted-foreground">Client</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {clientAccepted === true ? (
+                        <>
+                          <CheckCircle2 className="w-5 h-5 text-green-500" />
+                          <span className="text-sm font-medium text-green-600">Accepted</span>
+                        </>
+                      ) : clientAccepted === false ? (
+                        <>
+                          <XCircle className="w-5 h-5 text-red-500" />
+                          <span className="text-sm font-medium text-red-600">Declined</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="inline-block w-4 h-4 border-2 border-current border-r-transparent rounded-full animate-spin" />
+                          <span className="text-sm text-muted-foreground">Awaiting Response...</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Action Buttons */}
         <div className="flex justify-end gap-4 pt-4 border-t">
-          {step === "selecting" && assignedConsultants.size === selectedProject.consultantsNeeded && (
+          {step === "selecting" && (
             <Button 
               onClick={() => setStep("emailing_consultants")}
+              disabled={assignedConsultants.size !== selectedProject.consultantsNeeded}
               className="gap-2"
             >
               <Mail className="w-4 h-4" />
-              Continue to Emails
+              Next: Send Invitations
             </Button>
           )}
           {step === "emailing_consultants" && (
             <Button 
               onClick={handleSendConsultantEmails}
+              disabled={consultantResponses.size !== assignedConsultants.size}
               className="gap-2"
             >
               <Send className="w-4 h-4" />
-              Send Emails to Consultants
+              Next: Wait for Responses
             </Button>
           )}
           {step === "waiting_acceptance" && (
@@ -279,12 +626,69 @@ export default function MatchingPage() {
             </Button>
           )}
           {step === "emailing_client" && (
-            <Button 
-              onClick={handleSendClientEmail}
-              className="gap-2"
-            >
-              <Send className="w-4 h-4" />
-              Send Confirmation to Client
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button className="gap-2">
+                  <Mail className="w-4 h-4" />
+                  Next: Send to Client
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-2xl">
+                <DialogHeader>
+                  <DialogTitle>Send Email to Client</DialogTitle>
+                  <DialogDescription>
+                    Review and customize the email to be sent to {selectedProject?.client}.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                  <div className="space-y-2">
+                    <Label>Email Template</Label>
+                    <Select
+                      value={selectedTemplate}
+                      onValueChange={setSelectedTemplate}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a template" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="default">Standard Template</SelectItem>
+                        <SelectItem value="detailed">Detailed Template</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Subject</Label>
+                    <Input
+                      value={emailSubject || `Consultant Matches for ${selectedProject?.title}`}
+                      onChange={(e) => setEmailSubject(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Message</Label>
+                    <Textarea
+                      value={emailTemplate || getClientEmailTemplate()}
+                      onChange={(e) => setEmailTemplate(e.target.value)}
+                      className="min-h-[300px] font-mono"
+                    />
+                  </div>
+                </div>
+                <DialogFooter className="gap-2">
+                  <Button variant="outline" className="gap-2">
+                    <CalendarIcon className="w-4 h-4" />
+                    Schedule Meeting
+                  </Button>
+                  <Button onClick={handleSendClientEmail} className="gap-2">
+                    <Send className="w-4 h-4" />
+                    Send Email
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          )}
+          {step === "waiting_client" && (
+            <Button disabled className="gap-2">
+              <span className="inline-block w-4 h-4 border-2 border-current border-r-transparent rounded-full animate-spin" />
+              <span>Waiting for Client Response...</span>
             </Button>
           )}
           {step === "completed" && (
