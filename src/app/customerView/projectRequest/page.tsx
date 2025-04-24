@@ -56,7 +56,7 @@ export default function ProjectRequest() {
     };
 
     try {
-      const response = await fetch("https://exxeta.app.n8n.cloud/webhook-test/0457cf40-f02a-4dd9-b09a-e527ae7b4ea8", {
+      const response = await fetch("https://exxeta.app.n8n.cloud/webhook/0457cf40-f02a-4dd9-b09a-e527ae7b4ea8", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
