@@ -1,18 +1,32 @@
 "use client"
 
 import { cn } from "@/lib/utils"
+<<<<<<< HEAD
 import { Briefcase, Cog, LayoutDashboard, Puzzle, Users } from "lucide-react"
+=======
+>>>>>>> ecc2bb39febd5db7b717f893e5bb9e4181bc54e2
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
-interface SidebarProps {
-  className?: string
+interface NavItem {
+  href: string
+  icon: React.ReactNode
+  label: string
 }
 
+interface SidebarProps {
+  className?: string
+  navItems: NavItem[]
+}
+
+<<<<<<< HEAD
 export function Sidebar({ className }: SidebarProps) {
   const pathname = usePathname()
 
+=======
+export function Sidebar({ className, navItems }: SidebarProps) {
+>>>>>>> ecc2bb39febd5db7b717f893e5bb9e4181bc54e2
   return (
     <div
       className={cn(
@@ -30,6 +44,7 @@ export function Sidebar({ className }: SidebarProps) {
 
       <nav className="w-full px-6 flex flex-col h-full">
         <ul className="space-y-4">
+<<<<<<< HEAD
           <li>
             <NavItem href="/" icon={<LayoutDashboard size={20} />} isActive={pathname === "/"}>
               Dashboard
@@ -72,6 +87,15 @@ export function Sidebar({ className }: SidebarProps) {
               Profile
             </NavItem>
           </li>
+=======
+          {navItems.map((item) => (
+            <li key={item.href}>
+              <NavItem href={item.href} icon={item.icon} isActive={false}>
+                {item.label}
+              </NavItem>
+            </li>
+          ))}
+>>>>>>> ecc2bb39febd5db7b717f893e5bb9e4181bc54e2
         </ul>
       </nav>
     </div>
